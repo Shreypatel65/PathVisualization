@@ -80,13 +80,13 @@ submitButton.addEventListener('click', function (event) {
     socket.onmessage = function (event) {
         var data = JSON.parse(event.data);
         if (data.close) { // If the server sends a close message, close the socket
+            totalCost.innerText = data.cost != -1 ? 'The shortest path has a cost of ' + data.cost : 'No path found!'; // Display the cost of the path
+            if (data.cost == -1) { return; }
             let path = data.path;
             for (let i = 0; i < path.length; i++) { // Draw the path
                 grid[path[i][0]][path[i][1]] = 4;
                 fillCell(path[i][0], path[i][1]);
             }
-            totalCost.innerText = data.cost != -1 ?
-            'The shortest path has a cost of ' + data.cost : 'No path found!'; // Display the cost of the path
             socket.close();
         } else { // Else, draw the visited and frontier cells
             grid[data.x][data.y] = data.color;
